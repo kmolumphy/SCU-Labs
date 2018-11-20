@@ -1,0 +1,138 @@
+nclude<stdio.h>
+#include<string.h>
+void insert();
+void list();
+void show_dept();
+void check_duplicate();
+void remve();
+
+int counter = 0;
+struct entry
+{
+        char entryName[20];
+        int deptNum;
+};
+struct entry entries[10];
+
+int main(void)
+{
+	int x = 0;
+	while(x == 0)
+	{
+		printf("\nType 0 to quit.\nType 1 to add to the waiting list.\nType 2 to see the waiting list.\nType 3 to remove the oldest entry in a department\nType 4 to show the entries in a department\n:");
+		int opt;
+		scanf("%d",&opt);
+		switch(opt)
+		{
+			case 1:
+			{
+				char name[20];
+				int dept = 0;	
+				printf("What is the name?\n");
+				scanf("%s",name);
+				printf("What is the department?\n");
+				scanf("%i",&dept);
+				insert(dept,name);
+				break;
+			}
+			case 2:
+			{
+				list();			
+				break;
+			}
+			case 3:
+			{
+				remve();
+				break;
+			}
+			case 4:
+			{
+				show_dept();
+				break;
+			}
+			case 0:
+			{
+				return 0;
+			}
+		}
+	}
+	return 0;
+}
+
+
+void insert(int dept, char name[])
+{
+	if(counter == 10)
+	{
+		printf("You already have the max number of entries!\n");
+		return;
+	}	
+	if(dept != 1 && dept != 2 && dept != 3 && dept != 4) 
+	{
+		printf("Please choose a correct department!\n");
+		return;
+	}
+	check_duplicate(name);
+	strcpy(entries[counter].entryName,name);
+	entries[counter].deptNum = dept;
+	counter++;
+			
+}
+
+void list()
+{
+	printf("The list of names is...\n");
+	for(int i=0; i<counter; i++)
+	{
+		printf("%s    -    %d\n", entries[i].entryName, entries[i].deptNum);
+	}
+}
+
+void show_dept()
+{
+	printf("Which department would you like to check?\n");
+	int deptSelect;
+	scanf("%d",&deptSelect);
+	printf("The list of names in the %d department is:\n", deptSelect);
+	for(int i=0; i<counter; i++)
+	{
+		if(entries[i].deptNum == deptSelect)
+		{
+			printf("%s   -   %d\n",entries[i].entryName, entries[i].deptNum);
+		}
+	}
+}
+
+void check_duplicate(char name[])
+{
+	for(int i=0; i<counter; i++)
+        {
+                int compare = strcmp(entries[i].entryName,name);
+                if(compare == 0)
+                {
+                        printf("Sorry that name was a duplicate\n");
+                        return;
+                }
+        }
+}	
+
+void remve()
+{
+	printf("Which department would you like to remove the oldest entry from?\n");
+	int deptSelection;
+	scanf("%d",&deptSelection);
+	for(int i=0; i<counter; i++)
+	{
+		if(entries[i].deptNum == deptSelection)
+		{
+			for(int r=0; r<counter-i; r++)
+			{
+				strcpy(entries[i+r].entryName,entries[i+r+1].entryName);
+				entries[i+r].deptNum = entries[i+r+1].deptNum;
+			}
+		counter--;	
+		return;
+		}
+	}
+}
+

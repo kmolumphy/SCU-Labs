@@ -1,0 +1,32 @@
+nclude <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{
+int amtright = 0;
+srand((int) time(NULL));
+	for(int i=0; i<10; i++)
+	{
+		int divisor = rand()%12+1;
+		int quotient = rand()%13;
+		int answer = 0;
+		int dividend = divisor*quotient;
+		printf("The dividend is %d\n", dividend);
+		printf("The denominator is %d\n", divisor);
+		printf("What is the quotient? ");	
+		scanf("%d",&answer);
+		if(answer == quotient)
+		{
+			printf("Right\n");
+			amtright++;
+		}
+		else
+		{
+			printf("Wrong, the quotient is %d\n", quotient);
+		}
+	}	
+printf("Your total score is %d\n", amtright);
+return 0;
+}
+

@@ -1,0 +1,256 @@
+nclude<stdio.h>
+#include<string.h>
+void insert();
+void list();
+void show_dept();
+int check_duplicate();
+void remve();
+void showInfo();
+
+int counter = 0;
+union injuries
+{     
+       	float fever;
+        char kindOfPain[20];
+       	int numDaysSick;
+};
+
+struct entry
+{
+        char entryName[20];
+        int deptNum;
+	union injuries injury; 
+};
+struct entry entries[10];
+
+int main(void)
+{
+	int x = 0;
+	while(x == 0)
+	{
+		printf("\nType 0 to quit.\nType 1 to add to the waiting list.\nType 2 to see the waiting list.\nType 3 to remove the oldest entry in a department\nType 4 to show the entries in a department\nType 5 to find a person's info.\n:");
+		int opt;
+		scanf("%d",&opt);
+		switch(opt)
+		{
+			case 1:
+			{
+				char name[20];
+				int dept = 0;
+				union injuries u;	
+				printf("What is the name?\n");
+				scanf("%s",name);
+				printf("What is the department?\n");
+				scanf("%i",&dept);
+				if(dept == 1)
+				{
+					printf("How high is the fever?\n");
+					scanf("%f",&u.fever);
+				}
+                                if(dept == 2)
+                                {
+                                        printf("What kind of pain is it?\n");
+                                        scanf("%s",u.kindOfPain);
+                                }
+                                if(dept == 3 || dept == 4)
+                                {
+                                        printf("How many days have you been sick?\n");
+                                        scanf("%i",&u.numDaysSick);
+                                }
+				insert(dept,name,u);
+				break;
+			}
+			case 2:
+			{
+				list();			
+				break;
+			}
+			case 3:
+			{
+				remve();
+				break;
+			}
+			case 4:
+			{
+				show_dept();
+				break;
+			}
+			case 5:
+			{
+				char name[20];
+				printf("Who's info would you like to see?\n");
+				scanf("%s",name);
+				showInfo(name);
+				break;
+			}
+			case 0:
+			{
+				return 0;
+			}
+		}
+	}
+	return 0;
+}
+
+void showInfo(char name[])
+{
+	struct entry *p;
+        p=entries;
+	if(check_duplicate(name) == 1)
+	{
+		printf("That person is not on the list!\n");
+		return;
+	}
+        for(int i=0; i<counter; i++)
+        {
+                if(strcmp(p->entryName,name) == 0)
+                {
+                        if(p->deptNum == 3 || p->deptNum == 4)
+                        {
+                                printf("%s    -    %d    -    %i\n", p->entryName, p->deptNum,p->injury.numDaysSick);
+                        }
+                        if(p->deptNum == 2)
+                        {
+                                printf("%s    -    %d    -    %s\n", p->entryName, p->deptNum,p->injury.kindOfPain);
+                        }
+                        if(p->deptNum == 1)
+                        {
+                                printf("%s    -    %d    -    %f\n", p->entryName, p->deptNum,p->injury.fever);
+                        }
+                }
+                p++;
+        }
+	
+}
+
+void insert(int dept, char name[],union injuries u)
+{
+	struct entry *p;
+	p=entries;
+	if(counter == 10)
+	{
+		printf("You already have the max number of entries!\n");
+		return;
+	}	
+	if(dept != 1 && dept != 2 && dept != 3 && dept != 4) 
+	{
+		printf("Please choose a correct department!\n");
+		return;
+	}
+	if(check_duplicate(name) == 0)
+	{
+		printf("Sorry that name was a duplicate\n");
+		return;
+	}
+	for(int i=0; i<counter; i++)
+	{
+		p++;
+	}
+	p->injury.fever = u.fever;
+	strcpy(p->injury.kindOfPain,u.kindOfPain);
+	p->injury.numDaysSick = u.numDaysSick;	
+	strcpy(p->entryName,name);
+	p->deptNum = dept;	
+	counter++;		
+}
+
+void list()
+{
+	struct entry *p;
+        p=entries;
+	printf("The list of names is...\n");
+	for(int i=0; i<counter; i++)
+	{
+		if(p->deptNum == 3 || p->deptNum == 4)
+		{
+			printf("%s    -    %d    -    %i\n", p->entryName, p->deptNum,p->injury.numDaysSick);
+		}
+                if(p->deptNum == 2)
+                {
+                        printf("%s    -    %d    -    %s\n", p->entryName, p->deptNum,p->injury.kindOfPain);
+                }
+                if(p->deptNum == 1)
+                {
+                        printf("%s    -    %d    -    %f\n", p->entryName, p->deptNum,p->injury.fever);
+                }
+		p++;
+	}
+}
+
+void show_dept()
+{
+	struct entry *p;
+        p=entries;
+	printf("Which department would you like to check?\n");
+	int deptSelect;
+	scanf("%d",&deptSelect);
+	printf("The list of names in the %d department is:\n", deptSelect);
+	for(int i=0; i<counter; i++)
+	{
+		if(p->deptNum == deptSelect)
+		{
+	                if(p->deptNum == 3 || p->deptNum == 4)
+                	{
+                       		printf("%s    -    %d    -    %i\n", p->entryName, p->deptNum,p->injury.numDaysSick);
+                	}
+                	if(p->deptNum == 2)
+                	{
+                	        printf("%s    -    %d    -    %s\n", p->entryName, p->deptNum,p->injury.kindOfPain);
+                	}
+                	if(p->deptNum == 1)
+                	{
+                	        printf("%s    -    %d    -    %f\n", p->entryName, p->deptNum,p->injury.fever);
+                	}
+		}
+		p++;
+	}
+}
+
+int check_duplicate(char name[])
+{
+	struct entry *p;
+        p=entries;
+	for(int i=0; i<counter; i++)
+        {
+                int compare = strcmp(p->entryName,name);
+                if(compare == 0)
+                {
+                        return 0;
+                }
+		p++;
+        }
+	return 1;
+}	
+
+void remve()
+{
+	struct entry *p;
+        p=entries;
+	struct entry *t;
+	t=entries;
+	t++;
+	printf("Which department would you like to remove the oldest entry from?\n");
+	int deptSelection;
+	scanf("%d",&deptSelection);
+	for(int i=0; i<counter; i++)
+	{
+		if(p->deptNum == deptSelection)
+		{
+			for(int r=0; r<counter-i; r++)
+			{
+				strcpy(p->entryName,t->entryName);
+				p->deptNum = t->deptNum;
+				p->injury.fever = t->injury.fever;
+				p->injury.numDaysSick = t->injury.numDaysSick;
+				strcpy(p->injury.kindOfPain, t->injury.kindOfPain);
+				p++;
+				t++;			
+			}
+		counter--;	
+		return;
+		}
+		p++;
+		t++;
+	}
+}
+
